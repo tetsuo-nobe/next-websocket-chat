@@ -17,7 +17,7 @@ export default function Chat() {
   const currentMessageIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket("wss://7oogqsakr4.execute-api.ap-northeast-1.amazonaws.com/dev");
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WebSocket_URL!);
     wsRef.current = ws;
 
     ws.onopen = () => setIsConnected(true);
