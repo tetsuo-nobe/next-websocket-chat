@@ -47,9 +47,10 @@ export default function Chat() {
   const sendMessage = () => {
     if (!input.trim() || !wsRef.current || !isConnected) return;
     
+    const currentInput = input;
     const userMessage: Message = {
       id: Date.now(),
-      text: input,
+      text: currentInput,
       isUser: true,
     };
     
@@ -66,9 +67,15 @@ export default function Chat() {
     currentMessageIdRef.current = messageId;
     currentResponseRef.current = "";
     
+    const history = messages.length === 0 
+      ? "（初回なので会話履歴なし）"
+      : messages.filter(msg => msg.text.trim() !== "").map(msg => `${msg.isUser ? 'ユーザー' : 'アシスタント'}: ${msg.text}`).join('\n');
+    
+    const promptWithHistory = `${history}\n\nユーザー: ${currentInput}`;
+    
     wsRef.current.send(JSON.stringify({
       action: "sendtext",
-      text: input
+      text: promptWithHistory
     }));
     
     setInput("");
